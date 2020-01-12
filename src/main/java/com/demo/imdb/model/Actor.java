@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
-//Users have properties as first name, last name, born date, list of movies, etc.
 @Entity(name = "Actor")
 public class Actor {
     private Long actorID;
@@ -57,8 +56,8 @@ public class Actor {
         this.birthDate = birthDate;
     }
 
-    //TODO: lazy, orphan removal
-    @OneToMany(fetch = FetchType.EAGER)
+    //TODO: lazy
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinTable(name = "ActorImage", joinColumns = @JoinColumn(name = "actorID"), inverseJoinColumns = @JoinColumn(name = "imageID"))
     @Fetch(value = FetchMode.SUBSELECT)
     public List<Image> getImages() {

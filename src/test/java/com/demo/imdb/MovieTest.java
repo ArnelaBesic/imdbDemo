@@ -20,8 +20,8 @@ public class MovieTest {
 
     @Test
     public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
-        List<Movie> movies = movieService.list();
-        List<Actor> actors = actorService.list();
+        List<Movie> movies = movieService.getAllMovies();
+        List<Actor> actors = actorService.getAllActors();
         int size = movies.size();
     }
 }

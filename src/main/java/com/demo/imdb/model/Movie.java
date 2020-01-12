@@ -70,8 +70,8 @@ public class Movie {
         this.length = length;
     }
 
-    //Unidirectional relation
-    @OneToMany(fetch = FetchType.EAGER)
+    //TODO: eager
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(name = "MovieImage", joinColumns = @JoinColumn(name = "imdbID"), inverseJoinColumns = @JoinColumn(name = "imageID"))
     public List<Image> getImages() {
@@ -91,5 +91,10 @@ public class Movie {
 
     public void setCast(List<Actor> cast) {
         this.cast = cast;
+    }
+
+    @Transient
+    public String getFullName() {
+        return title.concat(" (").concat(String.valueOf(releaseYear)).concat(")");
     }
 }
