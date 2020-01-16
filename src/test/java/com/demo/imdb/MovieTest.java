@@ -21,7 +21,17 @@ public class MovieTest {
     @Test
     public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
         List<Movie> movies = movieService.getAllMovies();
-//        List<Movie> m = movieService.findMoviesByReleaseYear(Long.valueOf(122));
+        List<Movie> movies1 = movieService.findByTitleAndReleaseYear("Lo and Behold: Reveries of the Connected World", (short) 2016);
+        List<Movie> movies2 = movieService.findByTitleAndReleaseYear("Lo", (short) 1987);
+        List<Movie> movies3 = movieService.findByTitleAndReleaseYear("nun", (short) 1987);
+        List<Movie> movies4 = movieService.findByTitleAndReleaseYear("nun", (short) 2016);
+
+        List<Movie> movies5 = movieService.findByTitleAndReleaseYear( null,(short) 2016);
+        List<Movie> movies6 = movieService.findByTitleAndReleaseYear(null, (short) 1987);
+        List<Movie> movies7 = movieService.findByTitleAndReleaseYear("nun", null);
+        List<Movie> movies8 = movieService.findByTitleAndReleaseYear("Lo", null);
+        List<Movie> movies9 = movieService.findByTitleAndReleaseYear(null, null);
+        List<Movie> movies10 = movieService.findByTitleAndReleaseYear("Lo", (short) 2016);
         List<Actor> actors = actorService.getAllActors();
         int size = movies.size();
     }

@@ -78,15 +78,15 @@ public class ActorController {
 
     //e.g. http://localhost:8080/imdb/actors/
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createActor(@RequestBody FullActorResponse actor) {
+    public ResponseEntity<Object> createActor(@RequestBody FullActorResponse actorResponse) {
         List<Response> responses = new ArrayList<>();
-        if (actor.getActorID() != null) {
+        if (actorResponse.getActorID() != null) {
             Message message = new Message(Messages.USE_PUT_FOR_RECORD_UPDATE, Status.ERROR);
             responses.add(message);
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(responses);
         }
 
-        Actor savedActor = persist(actor, responses);
+        Actor savedActor = persist(actorResponse, responses);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedActor.getActorID())
@@ -128,11 +128,11 @@ public class ActorController {
             }
             actorService.deleteActorByID(id);
         } catch (ConstraintViolationException exc) {
-            logger.log(Level.INFO, String.format("Exception occurred while attempting to delete Actor %s. Cause: ", id, exc.getCause()));
+            logger.log(Level.INFO, String.format(Messages.DELETE_EXCEPTION, Actor.class.getSimpleName(), id, exc.getCause()));
             Message message = new Message(String.format(Messages.CONSTRAINT_VIOLATION_EXCEPTION, id), Status.ERROR);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
         } catch (EmptyResultDataAccessException exc) {
-            logger.log(Level.INFO, String.format("Exception occurred while attempting to delete Actor %s. Cause: ", id, exc.getCause()));
+            logger.log(Level.INFO, String.format(Messages.DELETE_EXCEPTION, Actor.class.getSimpleName(), id, exc.getCause()));
             Message message = new Message(String.format(Messages.ACTOR_NOT_FOUND, id), Status.ERROR);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
         }

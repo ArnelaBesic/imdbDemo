@@ -1,6 +1,7 @@
 package com.demo.imdb.json;
 
 import com.demo.imdb.model.Actor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDate;
 
@@ -57,5 +58,10 @@ public class BasicActorResponse implements Response {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+    @JsonIgnore
+    public String getFullName() {
+        return givenName.concat(" ").concat(lastName);
     }
 }

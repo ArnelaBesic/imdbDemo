@@ -2,6 +2,7 @@ package com.demo.imdb.model;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,9 +26,21 @@ public class Movie {
     public Movie() {
     }
 
-    //TODO: how to create ID
+    public Movie(String imdbID, String title, String description, Short releaseYear, Short length,
+                 List<Image> images, List<Actor> cast) {
+        this.imdbID = imdbID;
+        this.title = title;
+        this.description = description;
+        this.releaseYear = releaseYear;
+        this.length = length;
+        this.images = images;
+        this.cast = cast;
+    }
+
     @Id
-    @Column(unique = true)
+    @GeneratedValue(generator = "prod-generator")
+    @GenericGenerator(name = "prod-generator",
+            strategy = "com.demo.imdb.generators.MovieImdbIdGenerator")
     public String getImdbID() {
         return imdbID;
     }
