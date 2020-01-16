@@ -21,6 +21,7 @@ public class MovieTest {
     @Test
     public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
         List<Movie> movies = movieService.getAllMovies();
+//        List<Movie> m = movieService.findMoviesByReleaseYear(Long.valueOf(122));
         List<Actor> actors = actorService.getAllActors();
         int size = movies.size();
     }

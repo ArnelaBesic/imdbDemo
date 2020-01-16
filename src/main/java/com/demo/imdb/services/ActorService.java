@@ -22,15 +22,8 @@ public class ActorService {
         return actorRepository.findAll();
     }
 
-    //TODO
     public Actor createOrUpdateActor(Actor actor) {
         return actorRepository.save(actor);
-        //if new, check if exists by name, last name and year
-    }
-
-    //TODO: odgovor, try catch
-    public void deleteActor(Actor actor) {
-        actorRepository.delete(actor);
     }
 
     public void deleteActorByID(Long id) {

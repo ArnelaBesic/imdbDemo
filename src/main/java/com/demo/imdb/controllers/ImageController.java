@@ -22,7 +22,7 @@ public class ImageController {
     @GetMapping(path = "/image/{id}", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseBody
     public byte[] getImageById(@PathVariable("id") Long id) {
-        Optional<Image> image = imageService.getImageById(id);
+        Optional<Image> image = imageService.findImageById(id);
         if (image.isPresent()) {
             ImageResponse response = new ImageResponse(image.get());
             return response.getContent();

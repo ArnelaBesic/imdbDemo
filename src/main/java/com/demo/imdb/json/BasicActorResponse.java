@@ -1,30 +1,30 @@
 package com.demo.imdb.json;
 
 import com.demo.imdb.model.Actor;
-import com.demo.imdb.model.Movie;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
-public class ActorResponse {
+public class BasicActorResponse implements Response {
     private Long actorID;
     private String givenName;
     private String lastName;
     private LocalDate birthDate;
-    private List<ImageResponse> images;
-    private List<String> movies;
 
-    public ActorResponse() {
+    public BasicActorResponse() {
     }
 
-    public ActorResponse(Actor actor) {
+    public BasicActorResponse(Long actorID, String givenName, String lastName, LocalDate birthDate) {
+        this.actorID = actorID;
+        this.givenName = givenName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+    }
+
+    public BasicActorResponse(Actor actor) {
         this.actorID = actor.getActorID();
         this.givenName = actor.getGivenName();
         this.lastName = actor.getLastName();
         this.birthDate = actor.getBirthDate();
-        this.images = actor.getImages().stream().map(ImageResponse::new).collect(Collectors.toList());
-        this.movies = actor.getMovies().stream().map(Movie::getFullName).collect(Collectors.toList());
     }
 
     public Long getActorID() {
@@ -57,21 +57,5 @@ public class ActorResponse {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public List<ImageResponse> getImages() {
-        return images;
-    }
-
-    public void setImages(List<ImageResponse> images) {
-        this.images = images;
-    }
-
-    public List<String> getMovies() {
-        return movies;
-    }
-
-    public void setMovies(List<String> movies) {
-        this.movies = movies;
     }
 }

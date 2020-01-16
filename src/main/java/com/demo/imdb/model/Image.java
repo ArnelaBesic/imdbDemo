@@ -15,6 +15,12 @@ public class Image {
     public Image() {
     }
 
+    public Image(String name, Blob content, LocalDateTime uploadDate) {
+        this.name = name;
+        this.content = content;
+        this.uploadDate = uploadDate;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getImageID() {

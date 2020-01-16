@@ -6,43 +6,19 @@ import com.demo.imdb.model.Movie;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MovieResponse {
-    private String imdbID;
-    private String title;
+public class FullMovieResponse extends BasicMovieResponse {
     private String description;
-    private Short releaseYear;
     //length in minutes
     private Short length;
     private List<ImageResponse> images;
     private List<String> cast;
 
-    public MovieResponse() {
-    }
-
-    public MovieResponse(Movie movie) {
-        this.imdbID = movie.getImdbID();
-        this.title = movie.getTitle();
+    public FullMovieResponse(Movie movie) {
+        super(movie.getImdbID(), movie.getTitle(), movie.getReleaseYear());
         this.description = movie.getDescription();
-        this.releaseYear = movie.getReleaseYear();
         this.length = movie.getLength();
         this.images = movie.getImages().stream().map(ImageResponse::new).collect(Collectors.toList());
         this.cast = movie.getCast().stream().map(Actor::getFullName).collect(Collectors.toList());
-    }
-
-    public String getImdbID() {
-        return imdbID;
-    }
-
-    public void setImdbID(String imdbID) {
-        this.imdbID = imdbID;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getDescription() {
@@ -51,14 +27,6 @@ public class MovieResponse {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Short getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(Short releaseYear) {
-        this.releaseYear = releaseYear;
     }
 
     public Short getLength() {

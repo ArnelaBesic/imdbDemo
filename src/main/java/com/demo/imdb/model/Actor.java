@@ -20,6 +20,15 @@ public class Actor {
     public Actor() {
     }
 
+    public Actor(Long actorID, String givenName, String lastName, LocalDate birthDate, List<Image> images, List<Movie> movies) {
+        this.actorID = actorID;
+        this.givenName = givenName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.images = images;
+        this.movies = movies;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getActorID() {
