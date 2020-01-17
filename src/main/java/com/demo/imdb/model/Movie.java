@@ -38,9 +38,9 @@ public class Movie {
     }
 
     @Id
-    @GeneratedValue(generator = "prod-generator")
-    @GenericGenerator(name = "prod-generator",
-            strategy = "com.demo.imdb.generators.MovieImdbIdGenerator")
+    @GeneratedValue(generator = "imdb_generator")
+    @GenericGenerator(name = "imdb_generator",
+            strategy = "com.demo.imdb.generators.ImdbIdGenerator")
     public String getImdbID() {
         return imdbID;
     }
@@ -83,8 +83,7 @@ public class Movie {
         this.length = length;
     }
 
-    //TODO: eager
-    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(name = "MovieImage", joinColumns = @JoinColumn(name = "imdbID"), inverseJoinColumns = @JoinColumn(name = "imageID"))
     public List<Image> getImages() {
@@ -95,8 +94,7 @@ public class Movie {
         this.images = images;
     }
 
-    //TODO etch = FetchType.LAZY
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "MovieActor", joinColumns = @JoinColumn(name = "imdbID"), inverseJoinColumns = @JoinColumn(name = "actorID"))
     public List<Actor> getCast() {
         return cast;

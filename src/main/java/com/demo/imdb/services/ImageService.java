@@ -37,7 +37,7 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
-    public List<Image> convertToPersistedImages(List<ImageResponse> imageResponses, List<Response> messages) {
+    public List<Image> convertAndPersistAsImage(List<ImageResponse> imageResponses, List<Response> messages) {
         if (CollectionUtils.isEmpty(imageResponses)) {
             return new ArrayList<>();
         }

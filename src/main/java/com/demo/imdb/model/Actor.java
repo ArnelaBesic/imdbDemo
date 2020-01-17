@@ -65,8 +65,7 @@ public class Actor {
         this.birthDate = birthDate;
     }
 
-    //TODO: lazy
-    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(name = "ActorImage", joinColumns = @JoinColumn(name = "actorID"), inverseJoinColumns = @JoinColumn(name = "imageID"))
     @Fetch(value = FetchMode.SUBSELECT)
     public List<Image> getImages() {
@@ -77,7 +76,7 @@ public class Actor {
         this.images = images;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "cast")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cast")
     public List<Movie> getMovies() {
         return movies;
     }

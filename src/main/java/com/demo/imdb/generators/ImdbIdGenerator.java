@@ -7,9 +7,9 @@ import org.hibernate.id.IdentifierGenerator;
 import java.io.Serializable;
 import java.util.stream.Stream;
 
-public class MovieImdbIdGenerator implements IdentifierGenerator {
+public class ImdbIdGenerator implements IdentifierGenerator {
 
-    private String prefix = "tt";
+    private final String prefix = "tt";
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object obj)

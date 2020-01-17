@@ -18,9 +18,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.sql.rowset.serial.SerialBlob;
 import java.net.URI;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -98,7 +96,8 @@ public class ActorController {
     @PutMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> updateActor(@RequestBody FullActorResponse actor) {
         List<Response> responses = new ArrayList<>();
-        if (actor.getActorID() == null) {
+        boolean shouldNotProceed = actor.getActorID() == null || !actorService.findActorById(actor.getActorID()).isPresent();
+        if (shouldNotProceed) {
             Message message = new Message(Messages.USE_POST_FOR_RECORD_CREATION, Status.ERROR);
             responses.add(message);
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(responses);
@@ -141,54 +140,14 @@ public class ActorController {
     }
 
     private Actor persist(FullActorResponse fullActorResponse, List<Response> responses) {
-        List<Image> images = convertToPersistedImages(fullActorResponse.getImages(), responses);
-        List<Movie> movies = convertToPersistedMovies(fullActorResponse.getMovies(), responses);
+        List<Image> images = imageService.convertAndPersistAsImage(fullActorResponse.getImages(), responses);
+        List<Movie> movies = convertAndPersistAsMovie(fullActorResponse.getMovies(), responses);
 
         Actor actor = new Actor(fullActorResponse.getActorID(), fullActorResponse.getGivenName(), fullActorResponse.getLastName(), fullActorResponse.getBirthDate(), images, movies);
-        Actor savedActor = actorService.createOrUpdateActor(actor);
-        for (Movie movie : movies) {
-            if (!movie.getCast().contains(savedActor)) {
-                movie.getCast().add(savedActor);
-                movieService.createOrUpdateMovie(movie);
-            }
-        }
-        return savedActor;
+        return actorService.createOrUpdateActor(actor);
     }
 
-    private List<Image> convertToPersistedImages(List<ImageResponse> imageResponses, List<Response> messages) {
-        if (CollectionUtils.isEmpty(imageResponses)) {
-            return new ArrayList<>();
-        }
-        List<Image> images = new ArrayList<>();
-        for (ImageResponse imageResponse : imageResponses) {
-            Long imageID = imageResponse.getImageID();
-            if (imageID == null) {
-                Blob content;
-                try {
-                    content = new SerialBlob(imageResponse.getContent());
-                } catch (Exception exc) {
-                    Message message = new Message(String.format(Messages.IMAGE_CONVERSION_ERROR, imageResponse.getName()), Status.ERROR);
-                    messages.add(message);
-                    logger.log(Level.INFO, String.format(Messages.IMAGE_CONVERSION_ERROR, imageResponse.getName(), exc.getCause()));
-                    continue;
-                }
-                Image newImage = new Image(imageResponse.getName(), content, imageResponse.getUploadDate());
-                Image persistedImage = imageService.createImage(newImage);
-                images.add(persistedImage);
-            } else {
-                Optional<Image> image = imageService.findImageById(imageID);
-                if (!image.isPresent()) {
-                    Message message = new Message(String.format(Messages.IMAGE_NOT_FOUND, imageID), Status.ERROR);
-                    messages.add(message);
-                    logger.log(Level.INFO, String.format(Messages.IMAGE_NOT_FOUND, imageID));
-                }
-                image.ifPresent(images::add);
-            }
-        }
-        return images;
-    }
-
-    private List<Movie> convertToPersistedMovies(List<BasicMovieResponse> movieResponses, List<Response> messages) {
+    private List<Movie> convertAndPersistAsMovie(List<BasicMovieResponse> movieResponses, List<Response> messages) {
         if (CollectionUtils.isEmpty(movieResponses)) {
             return new ArrayList<>();
         }

@@ -60,9 +60,9 @@ public class MovieController {
         return movies.stream().map(FullMovieResponse::new).collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/movie/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/movie/{imdbID}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<? extends Response> findMovieByImdbID(@PathVariable String imdbID) {
+    public ResponseEntity<? extends Response> findMovieByImdbID(@PathVariable("imdbID") String imdbID) {
         Optional<Movie> movie = movieService.findMovieByImdbID(imdbID);
         if (movie.isPresent()) {
             FullMovieResponse fullMovieResponse = new FullMovieResponse(movie.get());
@@ -87,7 +87,8 @@ public class MovieController {
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createMovie(@RequestBody FullMovieResponse movieResponse) {
         List<Response> responses = new ArrayList<>();
-        if (movieResponse.getImdbID() != null) {
+        boolean shouldNotProceed = !StringUtils.isEmpty(movieResponse.getImdbID());
+        if (shouldNotProceed) {
             Message message = new Message(Messages.USE_PUT_FOR_RECORD_UPDATE, Status.ERROR);
             responses.add(message);
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(responses);
@@ -104,7 +105,8 @@ public class MovieController {
     @PutMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> updateMovie(@RequestBody FullMovieResponse movieResponse) {
         List<Response> responses = new ArrayList<>();
-        if (StringUtils.isEmpty(movieResponse.getImdbID())) {
+        boolean shouldNotProceed = StringUtils.isEmpty(movieResponse.getImdbID()) || !movieService.findMovieByImdbID(movieResponse.getImdbID()).isPresent();
+        if (shouldNotProceed) {
             Message message = new Message(Messages.USE_POST_FOR_RECORD_CREATION, Status.ERROR);
             responses.add(message);
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(responses);
@@ -141,14 +143,15 @@ public class MovieController {
     }
 
     private Movie persist(FullMovieResponse movieResponse, List<Response> responses) {
-        List<Image> images = imageService.convertToPersistedImages(movieResponse.getImages(), responses);
-        List<Actor> actors = convertToPersistedActors(movieResponse.getCast(), responses);
+        List<Image> images = imageService.convertAndPersistAsImage(movieResponse.getImages(), responses);
+        List<Actor> actors = convertAndPersistAsActor(movieResponse.getCast(), responses);
 
         Movie movie = new Movie(movieResponse.getImdbID(), movieResponse.getTitle(), movieResponse.getDescription(), movieResponse.getReleaseYear(), movieResponse.getLength(), images, actors);
         return movieService.createOrUpdateMovie(movie);
     }
 
-    private List<Actor> convertToPersistedActors(List<BasicActorResponse> basicActorResponses, List<Response> messages) {
+    //TODO: should this be in service
+    private List<Actor> convertAndPersistAsActor(List<BasicActorResponse> basicActorResponses, List<Response> messages) {
         if (CollectionUtils.isEmpty(basicActorResponses)) {
             return new ArrayList<>();
         }

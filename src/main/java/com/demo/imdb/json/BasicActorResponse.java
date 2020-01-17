@@ -14,13 +14,6 @@ public class BasicActorResponse implements Response {
     public BasicActorResponse() {
     }
 
-    public BasicActorResponse(Long actorID, String givenName, String lastName, LocalDate birthDate) {
-        this.actorID = actorID;
-        this.givenName = givenName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
-    }
-
     public BasicActorResponse(Actor actor) {
         this.actorID = actor.getActorID();
         this.givenName = actor.getGivenName();

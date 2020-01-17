@@ -10,12 +10,6 @@ public class BasicMovieResponse implements Response {
     public BasicMovieResponse() {
     }
 
-    public BasicMovieResponse(String imdbID, String title, Short releaseYear) {
-        this.imdbID = imdbID;
-        this.title = title;
-        this.releaseYear = releaseYear;
-    }
-
     public BasicMovieResponse(Movie movie) {
         this.imdbID = movie.getImdbID();
         this.title = movie.getTitle();

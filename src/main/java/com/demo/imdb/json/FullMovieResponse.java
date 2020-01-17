@@ -17,7 +17,7 @@ public class FullMovieResponse extends BasicMovieResponse {
     }
 
     public FullMovieResponse(Movie movie) {
-        super(movie.getImdbID(), movie.getTitle(), movie.getReleaseYear());
+        super(movie);
         this.description = movie.getDescription();
         this.length = movie.getLength();
         this.images = movie.getImages().stream().map(ImageResponse::new).collect(Collectors.toList());

@@ -1,6 +1,7 @@
 package com.demo.imdb.services;
 
 import com.demo.imdb.model.Actor;
+import com.demo.imdb.model.Movie;
 import com.demo.imdb.repositories.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ public class ActorService {
     @Autowired
     private ActorRepository actorRepository;
 
+    @Autowired
+    private MovieService movieService;
+
     public List<Actor> getAllActors() {
         return actorRepository.findAll();
     }
@@ -23,7 +27,14 @@ public class ActorService {
     }
 
     public Actor createOrUpdateActor(Actor actor) {
-        return actorRepository.save(actor);
+        Actor savedActor = actorRepository.save(actor);
+        for (Movie movie : savedActor.getMovies()) {
+            if (!movie.getCast().contains(savedActor)) {
+                movie.getCast().add(savedActor);
+                movieService.createOrUpdateMovie(movie);
+            }
+        }
+        return savedActor;
     }
 
     public void deleteActorByID(Long id) {
