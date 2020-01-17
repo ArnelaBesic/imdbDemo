@@ -42,8 +42,8 @@ public class MovieController {
     //http://localhost:8080/imdb/movies/list/
     @GetMapping(path = "/all/", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Response> getAllMovies() {
-        List<Movie> movies = movieService.getAllMovies();
+    public List<Response> findAll() {
+        List<Movie> movies = movieService.findAll();
         if (CollectionUtils.isEmpty(movies)) {
             return Collections.singletonList(new Message(Messages.NO_DATA, Status.OK));
         }
@@ -52,30 +52,31 @@ public class MovieController {
 
     @GetMapping(path = "/paginate/", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Response> getPaginatedMovieList() {
-        List<Movie> movies = movieService.getAllMovies();
+    public List<Response> findAllPaginated() {
+        List<Movie> movies = movieService.findAll();
         if (CollectionUtils.isEmpty(movies)) {
             return Collections.singletonList(new Message(Messages.NO_DATA, Status.OK));
         }
         return movies.stream().map(FullMovieResponse::new).collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/movie/{imdbID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    // e.g. http://localhost:8080/imdb/movies/movie/tt5275828
+    @GetMapping(path = "/movie/{imdbId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<? extends Response> findMovieByImdbID(@PathVariable("imdbID") String imdbID) {
-        Optional<Movie> movie = movieService.findMovieByImdbID(imdbID);
+    public ResponseEntity<? extends Response> findByImdbId(@PathVariable("imdbId") String imdbId) {
+        Optional<Movie> movie = movieService.findByImdbId(imdbId);
         if (movie.isPresent()) {
             FullMovieResponse fullMovieResponse = new FullMovieResponse(movie.get());
             return ResponseEntity.ok(fullMovieResponse);
         }
-        Message message = new Message(String.format(Messages.MOVIE_NOT_FOUND, imdbID), Status.ERROR);
+        Message message = new Message(String.format(Messages.MOVIE_NOT_FOUND, imdbId), Status.ERROR);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
 
     //e. g. http://localhost:8080/imdb/movies/?title=Lo&year=2016
     @GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<Response> findMoviesByTitleAndReleaseYear(@RequestParam(required = false) String title, @RequestParam(required = false) Short year) {
+    public List<Response> findByTitleAndReleaseYear(@RequestParam(required = false) String title, @RequestParam(required = false) Short year) {
         List<Movie> movies = movieService.findByTitleAndReleaseYear(title, year);
         if (CollectionUtils.isEmpty(movies)) {
             return Collections.singletonList(new Message(Messages.NO_DATA, Status.OK));
@@ -85,9 +86,9 @@ public class MovieController {
 
     //e.g. http://localhost:8080/imdb/movies/
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createMovie(@RequestBody FullMovieResponse movieResponse) {
+    public ResponseEntity<Object> create(@RequestBody FullMovieResponse movieResponse) {
         List<Response> responses = new ArrayList<>();
-        boolean shouldNotProceed = !StringUtils.isEmpty(movieResponse.getImdbID());
+        boolean shouldNotProceed = !StringUtils.isEmpty(movieResponse.getImdbId());
         if (shouldNotProceed) {
             Message message = new Message(Messages.USE_PUT_FOR_RECORD_UPDATE, Status.ERROR);
             responses.add(message);
@@ -96,16 +97,16 @@ public class MovieController {
         Movie movie = persist(movieResponse, responses);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(movie.getImdbID())
+                .buildAndExpand(movie.getImdbId())
                 .toUri();
         return ResponseEntity.created(location).body(responses);
     }
 
     //e.g. http://localhost:8080/imdb/movies/
     @PutMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> updateMovie(@RequestBody FullMovieResponse movieResponse) {
+    public ResponseEntity<Object> update(@RequestBody FullMovieResponse movieResponse) {
         List<Response> responses = new ArrayList<>();
-        boolean shouldNotProceed = StringUtils.isEmpty(movieResponse.getImdbID()) || !movieService.findMovieByImdbID(movieResponse.getImdbID()).isPresent();
+        boolean shouldNotProceed = StringUtils.isEmpty(movieResponse.getImdbId()) || !movieService.findByImdbId(movieResponse.getImdbId()).isPresent();
         if (shouldNotProceed) {
             Message message = new Message(Messages.USE_POST_FOR_RECORD_CREATION, Status.ERROR);
             responses.add(message);
@@ -114,31 +115,31 @@ public class MovieController {
         Movie movie = persist(movieResponse, responses);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(movie.getImdbID())
+                .buildAndExpand(movie.getImdbId())
                 .toUri();
         return ResponseEntity.status(HttpStatus.OK).location(location).body(responses);
     }
 
     //e.g. http://localhost:8080/imdb/movies/movie/tt5275828
-    @DeleteMapping(path = "/movie/{imdbID}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response> deleteMovieByID(@PathVariable("imdbID") String imdbID) {
+    @DeleteMapping(path = "/movie/{imdbId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Response> deleteById(@PathVariable("imdbId") String imdbId) {
         try {
-            Optional<Movie> optionalMovie = movieService.findMovieByImdbID(imdbID);
+            Optional<Movie> optionalMovie = movieService.findByImdbId(imdbId);
             if (!optionalMovie.isPresent()) {
-                Message message = new Message(String.format(Messages.MOVIE_NOT_FOUND, imdbID), Status.ERROR);
+                Message message = new Message(String.format(Messages.MOVIE_NOT_FOUND, imdbId), Status.ERROR);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
             }
-            movieService.deleteMovieByID(imdbID);
+            movieService.deleteById(imdbId);
         } catch (ConstraintViolationException exc) {
-            logger.log(Level.INFO, String.format(Messages.DELETE_EXCEPTION, Movie.class.getSimpleName(), imdbID, exc.getCause()));
-            Message message = new Message(String.format(Messages.CONSTRAINT_VIOLATION_EXCEPTION, imdbID), Status.ERROR);
+            logger.log(Level.INFO, String.format(Messages.DELETE_EXCEPTION, Movie.class.getSimpleName(), imdbId, exc.getCause()));
+            Message message = new Message(String.format(Messages.CONSTRAINT_VIOLATION_EXCEPTION, imdbId), Status.ERROR);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
         } catch (EmptyResultDataAccessException exc) {
-            logger.log(Level.INFO, String.format(Messages.DELETE_EXCEPTION, Movie.class.getSimpleName(), imdbID, exc.getCause()));
-            Message message = new Message(String.format(Messages.MOVIE_NOT_FOUND, imdbID), Status.ERROR);
+            logger.log(Level.INFO, String.format(Messages.DELETE_EXCEPTION, Movie.class.getSimpleName(), imdbId, exc.getCause()));
+            Message message = new Message(String.format(Messages.MOVIE_NOT_FOUND, imdbId), Status.ERROR);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
         }
-        Message message = new Message(String.format(Messages.SUCCESSFUL_DELETION, imdbID), Status.OK);
+        Message message = new Message(String.format(Messages.SUCCESSFUL_DELETION, imdbId), Status.OK);
         return ResponseEntity.ok(message);
     }
 
@@ -146,25 +147,23 @@ public class MovieController {
         List<Image> images = imageService.convertAndPersistAsImage(movieResponse.getImages(), responses);
         List<Actor> actors = convertAndPersistAsActor(movieResponse.getCast(), responses);
 
-        Movie movie = new Movie(movieResponse.getImdbID(), movieResponse.getTitle(), movieResponse.getDescription(), movieResponse.getReleaseYear(), movieResponse.getLength(), images, actors);
-        return movieService.createOrUpdateMovie(movie);
+        Movie movie = new Movie(movieResponse.getImdbId(), movieResponse.getTitle(), movieResponse.getDescription(), movieResponse.getReleaseYear(), movieResponse.getLength(), images, actors);
+        return movieService.createOrUpdate(movie);
     }
 
-    //TODO: should this be in service
-    private List<Actor> convertAndPersistAsActor(List<BasicActorResponse> basicActorResponses, List<Response> messages) {
-        if (CollectionUtils.isEmpty(basicActorResponses)) {
+    //TODO: should this be in service?
+    private List<Actor> convertAndPersistAsActor(List<BasicActorResponse> actorResponses, List<Response> messages) {
+        if (CollectionUtils.isEmpty(actorResponses)) {
             return new ArrayList<>();
         }
         List<Actor> actors = new ArrayList<>();
-        for (BasicActorResponse actorResponse : basicActorResponses) {
-            Long id = actorResponse.getActorID();
+        for (BasicActorResponse actorResponse : actorResponses) {
+            Long id = actorResponse.getActorId();
             if (id == null) {
                 Message message = new Message(String.format(Messages.USE_ACTOR_API_TO_CREATE_NEW_ACTOR, actorResponse.getFullName()), Status.ERROR);
                 messages.add(message);
-                continue;
-
             } else {
-                Optional<Actor> actor = actorService.findActorById(id);
+                Optional<Actor> actor = actorService.findById(id);
                 if (!actor.isPresent()) {
                     Message message = new Message(String.format(Messages.ACTOR_NOT_FOUND, id), Status.ERROR);
                     messages.add(message);

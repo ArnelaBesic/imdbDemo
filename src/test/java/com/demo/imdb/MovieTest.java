@@ -20,7 +20,7 @@ public class MovieTest {
 
     @Test
     public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
-        List<Movie> movies = movieService.getAllMovies();
+        List<Movie> movies = movieService.findAll();
         List<Movie> movies1 = movieService.findByTitleAndReleaseYear("Lo and Behold: Reveries of the Connected World", (short) 2016);
         List<Movie> movies2 = movieService.findByTitleAndReleaseYear("Lo", (short) 1987);
         List<Movie> movies3 = movieService.findByTitleAndReleaseYear("nun", (short) 1987);
@@ -32,7 +32,7 @@ public class MovieTest {
         List<Movie> movies8 = movieService.findByTitleAndReleaseYear("Lo", null);
         List<Movie> movies9 = movieService.findByTitleAndReleaseYear(null, null);
         List<Movie> movies10 = movieService.findByTitleAndReleaseYear("Lo", (short) 2016);
-        List<Actor> actors = actorService.getAllActors();
+        List<Actor> actors = actorService.findAll();
         int size = movies.size();
     }
 }

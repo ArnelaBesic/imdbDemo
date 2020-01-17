@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity(name = "Image")
 public class Image {
-    private Long imageID;
+    private Long imageId;
     private String name;
     private Blob content;
     private LocalDateTime uploadDate;
@@ -23,12 +23,12 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long getImageID() {
-        return imageID;
+    public Long getImageId() {
+        return imageId;
     }
 
-    public void setImageID(Long imageID) {
-        this.imageID = imageID;
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
     }
 
     @NotNull

@@ -3,7 +3,7 @@ package com.demo.imdb.json;
 import com.demo.imdb.model.Movie;
 
 public class BasicMovieResponse implements Response {
-    private String imdbID;
+    private String imdbId;
     private String title;
     private Short releaseYear;
 
@@ -11,17 +11,17 @@ public class BasicMovieResponse implements Response {
     }
 
     public BasicMovieResponse(Movie movie) {
-        this.imdbID = movie.getImdbID();
+        this.imdbId = movie.getImdbId();
         this.title = movie.getTitle();
         this.releaseYear = movie.getReleaseYear();
     }
 
-    public String getImdbID() {
-        return imdbID;
+    public String getImdbId() {
+        return imdbId;
     }
 
-    public void setImdbID(String imdbID) {
-        this.imdbID = imdbID;
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
     }
 
     public String getTitle() {

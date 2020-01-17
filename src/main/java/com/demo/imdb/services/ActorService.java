@@ -17,31 +17,31 @@ public class ActorService {
     @Autowired
     private MovieService movieService;
 
-    public List<Actor> getAllActors() {
+    public List<Actor> findAll() {
         return actorRepository.findAll();
     }
 
     //TODO
-    public List<Actor> getAllActorsWithPagination() {
+    public List<Actor> findAllWithPagination() {
         return actorRepository.findAll();
     }
 
-    public Actor createOrUpdateActor(Actor actor) {
+    public Actor createOrUpdate(Actor actor) {
         Actor savedActor = actorRepository.save(actor);
         for (Movie movie : savedActor.getMovies()) {
             if (!movie.getCast().contains(savedActor)) {
                 movie.getCast().add(savedActor);
-                movieService.createOrUpdateMovie(movie);
+                movieService.createOrUpdate(movie);
             }
         }
         return savedActor;
     }
 
-    public void deleteActorByID(Long id) {
+    public void deleteById(Long id) {
         actorRepository.deleteById(id);
     }
 
-    public Optional<Actor> findActorById(Long id) {
+    public Optional<Actor> findById(Long id) {
         return actorRepository.findById(id);
     }
 }

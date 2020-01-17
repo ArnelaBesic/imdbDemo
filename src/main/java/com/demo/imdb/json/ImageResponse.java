@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ImageResponse {
-    private Long imageID;
+    private Long imageId;
     private String name;
     private byte[] content;
     private LocalDateTime uploadDate;
@@ -20,27 +20,27 @@ public class ImageResponse {
     }
 
     public ImageResponse(Image image) {
-        this.imageID = image.getImageID();
+        this.imageId = image.getImageId();
         this.name = image.getName();
 
         try {
             this.content = IOUtils.toByteArray(image.getContent().getBinaryStream());
         } catch (IOException e) {
-            logger.log(Level.INFO, String.format("IOException during conversion of image content [id: %s, name: %s] to byte array", imageID, name));
+            logger.log(Level.INFO, String.format("IOException during conversion of image content [id: %s, name: %s] to byte array", imageId, name));
             e.printStackTrace();
         } catch (SQLException e) {
-            logger.log(Level.INFO, String.format("SQLException during conversion of image content [id: %s, name: %s] to byte array", imageID, name));
+            logger.log(Level.INFO, String.format("SQLException during conversion of image content [id: %s, name: %s] to byte array", imageId, name));
             e.printStackTrace();
         }
         this.uploadDate = image.getUploadDate();
     }
 
-    public Long getImageID() {
-        return imageID;
+    public Long getImageId() {
+        return imageId;
     }
 
-    public void setImageID(Long imageID) {
-        this.imageID = imageID;
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
     }
 
     public String getName() {

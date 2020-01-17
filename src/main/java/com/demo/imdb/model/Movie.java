@@ -13,8 +13,8 @@ case when movie is not yet released and not all data is known.
  */
 @Entity(name = "Movie")
 public class Movie {
-    //as identifier use imdbID. example imdbID = tt5275828
-    private String imdbID;
+    //as identifier use imdbId. e.g. imdbId = tt5275828
+    private String imdbId;
     private String title;
     private String description;
     private Short releaseYear;
@@ -26,9 +26,9 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(String imdbID, String title, String description, Short releaseYear, Short length,
+    public Movie(String imdbId, String title, String description, Short releaseYear, Short length,
                  List<Image> images, List<Actor> cast) {
-        this.imdbID = imdbID;
+        this.imdbId = imdbId;
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
@@ -41,12 +41,12 @@ public class Movie {
     @GeneratedValue(generator = "imdb_generator")
     @GenericGenerator(name = "imdb_generator",
             strategy = "com.demo.imdb.generators.ImdbIdGenerator")
-    public String getImdbID() {
-        return imdbID;
+    public String getImdbId() {
+        return imdbId;
     }
 
-    public void setImdbID(String imdbID) {
-        this.imdbID = imdbID;
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
     }
 
     @NotNull
@@ -85,7 +85,7 @@ public class Movie {
 
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     @Fetch(value = FetchMode.SUBSELECT)
-    @JoinTable(name = "MovieImage", joinColumns = @JoinColumn(name = "imdbID"), inverseJoinColumns = @JoinColumn(name = "imageID"))
+    @JoinTable(name = "MovieImage", joinColumns = @JoinColumn(name = "imdbId"), inverseJoinColumns = @JoinColumn(name = "imageId"))
     public List<Image> getImages() {
         return images;
     }
@@ -95,7 +95,7 @@ public class Movie {
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "MovieActor", joinColumns = @JoinColumn(name = "imdbID"), inverseJoinColumns = @JoinColumn(name = "actorID"))
+    @JoinTable(name = "MovieActor", joinColumns = @JoinColumn(name = "imdbId"), inverseJoinColumns = @JoinColumn(name = "actorId"))
     public List<Actor> getCast() {
         return cast;
     }

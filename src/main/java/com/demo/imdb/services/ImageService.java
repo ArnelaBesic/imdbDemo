@@ -29,10 +29,6 @@ public class ImageService {
         return imageRepository.findById(id);
     }
 
-    public List<Image> findAllById(List<Long> ids) {
-        return imageRepository.findAllById(ids);
-    }
-
     public Image createImage(Image image) {
         return imageRepository.save(image);
     }
@@ -43,8 +39,8 @@ public class ImageService {
         }
         List<Image> images = new ArrayList<>();
         for (ImageResponse imageResponse : imageResponses) {
-            Long imageID = imageResponse.getImageID();
-            if (imageID == null) {
+            Long imageId = imageResponse.getImageId();
+            if (imageId == null) {
                 Blob content;
                 try {
                     content = new SerialBlob(imageResponse.getContent());
@@ -58,11 +54,11 @@ public class ImageService {
                 Image persistedImage = createImage(newImage);
                 images.add(persistedImage);
             } else {
-                Optional<Image> image = findImageById(imageID);
+                Optional<Image> image = findImageById(imageId);
                 if (!image.isPresent()) {
-                    Message message = new Message(String.format(Messages.IMAGE_NOT_FOUND, imageID), Status.ERROR);
+                    Message message = new Message(String.format(Messages.IMAGE_NOT_FOUND, imageId), Status.ERROR);
                     messages.add(message);
-                    logger.log(Level.INFO, String.format(Messages.IMAGE_NOT_FOUND, imageID));
+                    logger.log(Level.INFO, String.format(Messages.IMAGE_NOT_FOUND, imageId));
                 }
                 image.ifPresent(images::add);
             }

@@ -14,28 +14,28 @@ public class MovieService {
     @Autowired
     private MovieRepository movieRepository;
 
-    public List<Movie> getAllMovies() {
+    public List<Movie> findAll() {
         return movieRepository.findAll();
     }
 
     //TODO
-    public List<Movie> getAllMoviesWithPagination() {
+    public List<Movie> findAllWithPagination() {
         return movieRepository.findAll();
     }
 
-    public Optional<Movie> findMovieByImdbID(String imdbID) {
-        return movieRepository.findById(imdbID);
+    public Optional<Movie> findByImdbId(String imdbId) {
+        return movieRepository.findById(imdbId);
     }
 
     public List<Movie> findByTitleAndReleaseYear(String title, Short releaseYear) {
         return movieRepository.findByTitleAndReleaseYear(title, releaseYear);
     }
 
-    public Movie createOrUpdateMovie(Movie movie) {
+    public Movie createOrUpdate(Movie movie) {
         return movieRepository.save(movie);
     }
 
-    public void deleteMovieByID(String id) {
+    public void deleteById(String id) {
         movieRepository.deleteById(id);
     }
 }

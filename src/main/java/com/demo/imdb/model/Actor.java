@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity(name = "Actor")
 public class Actor {
-    private Long actorID;
+    private Long actorId;
     private String givenName;
     private String lastName;
     private LocalDate birthDate;
@@ -20,8 +20,8 @@ public class Actor {
     public Actor() {
     }
 
-    public Actor(Long actorID, String givenName, String lastName, LocalDate birthDate, List<Image> images, List<Movie> movies) {
-        this.actorID = actorID;
+    public Actor(Long actorId, String givenName, String lastName, LocalDate birthDate, List<Image> images, List<Movie> movies) {
+        this.actorId = actorId;
         this.givenName = givenName;
         this.lastName = lastName;
         this.birthDate = birthDate;
@@ -31,12 +31,12 @@ public class Actor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long getActorID() {
-        return actorID;
+    public Long getActorId() {
+        return actorId;
     }
 
-    public void setActorID(Long actorID) {
-        this.actorID = actorID;
+    public void setActorId(Long actorId) {
+        this.actorId = actorId;
     }
 
     @NotNull
@@ -66,7 +66,7 @@ public class Actor {
     }
 
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinTable(name = "ActorImage", joinColumns = @JoinColumn(name = "actorID"), inverseJoinColumns = @JoinColumn(name = "imageID"))
+    @JoinTable(name = "ActorImage", joinColumns = @JoinColumn(name = "actorId"), inverseJoinColumns = @JoinColumn(name = "imageId"))
     @Fetch(value = FetchMode.SUBSELECT)
     public List<Image> getImages() {
         return images;

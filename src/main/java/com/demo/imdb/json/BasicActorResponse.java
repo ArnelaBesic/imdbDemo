@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 
 public class BasicActorResponse implements Response {
-    private Long actorID;
+    private Long actorId;
     private String givenName;
     private String lastName;
     private LocalDate birthDate;
@@ -15,18 +15,18 @@ public class BasicActorResponse implements Response {
     }
 
     public BasicActorResponse(Actor actor) {
-        this.actorID = actor.getActorID();
+        this.actorId = actor.getActorId();
         this.givenName = actor.getGivenName();
         this.lastName = actor.getLastName();
         this.birthDate = actor.getBirthDate();
     }
 
-    public Long getActorID() {
-        return actorID;
+    public Long getActorId() {
+        return actorId;
     }
 
-    public void setActorID(Long actorID) {
-        this.actorID = actorID;
+    public void setActorId(Long actorId) {
+        this.actorId = actorId;
     }
 
     public String getGivenName() {
