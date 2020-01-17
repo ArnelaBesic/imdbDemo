@@ -1,10 +1,10 @@
-# **IMDB**
+# IMDB
 * Backend application for movies and actors management via REST API
 
-## **Getting Started**
+##Getting Started
 * IMBD is stand-alone Spring based application created via Spring boot 2.2.2
 
-###**Prerequisites**
+###Prerequisites
 * Programming language: Java - 1.8 (tested with jdk1.8.0_111)
 * Database: H2, version 1.4.200
 * Build automation: Maven
@@ -12,7 +12,7 @@
 * Database VCS: Flyway Community Edition 6.0.8 by Redgate
 * Frameworks: Hibernate 5.4.9.Final, Spring boot 2.2.2
 
-###**Installing**
+###Installing
 * [HELP.md]
 * Project is mavenized, so all dependencies are in pom.xml.
 * Database is H2. So fer, it is used in embedded mode, as either in memory or persistent database.
@@ -31,6 +31,6 @@ run, rename this file to avoid unnecessary constraint exceptions, since data.sql
 * Entry point to application is ImdbApplication, which can be run in Run or Debug mode.
 * Tomcat starts on port: 8080 (http).
 
-###**Running the tests**
+###Running the tests
 Tests should be added to src/test/java/com/demo/imdb/
 
