@@ -33,7 +33,16 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
-    public List<Image> convertAndPersistAsImage(List<ImageResponse> imageResponses, List<Response> messages) {
+    /**
+     * For all images, check if they are already present in database.
+     * If yes, add them to the list. Otherwise create new Image and
+     * add to the list.
+     *
+     * @param imageResponses - json wrapper for Image entity
+     * @param responses      - reference to list of all response messages that will be sent back to client
+     * @return List<Image> - fully persisted list of image
+     */
+    public List<Image> convertAndPersistAsImage(List<ImageResponse> imageResponses, List<Response> responses) {
         if (CollectionUtils.isEmpty(imageResponses)) {
             return new ArrayList<>();
         }
@@ -46,7 +55,7 @@ public class ImageService {
                     content = new SerialBlob(imageResponse.getContent());
                 } catch (Exception exc) {
                     Message message = new Message(String.format(Messages.IMAGE_CONVERSION_ERROR, imageResponse.getName()), Status.ERROR);
-                    messages.add(message);
+                    responses.add(message);
                     logger.log(Level.INFO, String.format(Messages.IMAGE_CONVERSION_ERROR, imageResponse.getName(), exc.getCause()));
                     continue;
                 }
@@ -57,7 +66,7 @@ public class ImageService {
                 Optional<Image> image = findImageById(imageId);
                 if (!image.isPresent()) {
                     Message message = new Message(String.format(Messages.IMAGE_NOT_FOUND, imageId), Status.ERROR);
-                    messages.add(message);
+                    responses.add(message);
                     logger.log(Level.INFO, String.format(Messages.IMAGE_NOT_FOUND, imageId));
                 }
                 image.ifPresent(images::add);

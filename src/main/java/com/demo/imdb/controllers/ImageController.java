@@ -20,7 +20,13 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
-    //e.g. http://localhost:8080/imdb/images/image/1
+    /**
+     * Find Image with id same as path variable, e.g. http://localhost:8080/imdb/images/image/1
+     *
+     * @param id by which image will be searched for
+     * @return ResponseEntity<Object> containing Image if present and HTTP status 200.
+     * Otherwise, status NOT_FOUND and appropriate message
+     */
     @GetMapping(path = "/image/{id}", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseBody
     public ResponseEntity<Object> getImageById(@PathVariable("id") Long id) {

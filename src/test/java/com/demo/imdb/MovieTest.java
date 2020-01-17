@@ -12,12 +12,12 @@ import java.util.List;
 
 @SpringBootTest
 public class MovieTest {
-
     @Autowired
     private MovieService movieService;
     @Autowired
     private ActorService actorService;
 
+    //TODO
     @Test
     public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
         List<Movie> movies = movieService.findAll();
