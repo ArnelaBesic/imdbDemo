@@ -136,7 +136,7 @@ public class MovieController {
         }
         Movie movie = persist(movieResponse, responses);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+                .path("/movie/{id}")
                 .buildAndExpand(movie.getImdbId())
                 .toUri();
         return ResponseEntity.created(location).body(responses);
@@ -167,7 +167,7 @@ public class MovieController {
         }
         Movie movie = persist(movieResponse, responses);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+                .path("/movie/{id}")
                 .buildAndExpand(movie.getImdbId())
                 .toUri();
         return ResponseEntity.status(HttpStatus.OK).location(location).body(responses);

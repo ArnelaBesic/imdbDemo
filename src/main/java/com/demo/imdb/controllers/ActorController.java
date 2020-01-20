@@ -116,7 +116,7 @@ public class ActorController {
 
         Actor actor = persist(actorResponse, responses);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+                .path("/actor/{id}")
                 .buildAndExpand(actor.getActorId())
                 .toUri();
         return ResponseEntity.created(location).body(responses);
@@ -147,7 +147,7 @@ public class ActorController {
         }
         Actor actor = persist(actorResponse, responses);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
+                .path("/actor/{id}")
                 .buildAndExpand(actor.getActorId())
                 .toUri();
         return ResponseEntity.status(HttpStatus.OK).location(location).body(responses);
